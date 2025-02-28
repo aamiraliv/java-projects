@@ -23,6 +23,7 @@ public class Employee {
     @Column(name = "Last_name")
     private String lastName;
 
+    @Column(name = "email")
     private String email;
 
 }

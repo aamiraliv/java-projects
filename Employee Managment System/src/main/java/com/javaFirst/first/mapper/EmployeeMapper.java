@@ -4,7 +4,7 @@ import com.javaFirst.first.dto.EmployeeDto;
 import com.javaFirst.first.entity.Employee;
 
 public class EmployeeMapper {
-    public static EmployeeDto mapToEmployeeDto(Employee employee){
+    public static EmployeeDto mapToEmployeeDto(Employee employee) {
         return new EmployeeDto(
                 employee.getId(),
                 employee.getFirstName(),
@@ -12,7 +12,8 @@ public class EmployeeMapper {
                 employee.getEmail()
         );
     }
-    public static Employee mapToEmployee(EmployeeDto employeeDto){
+
+    public static Employee mapToEmployee(EmployeeDto employeeDto) {
         return new Employee(
                 employeeDto.getId(),
                 employeeDto.getFirstName(),
