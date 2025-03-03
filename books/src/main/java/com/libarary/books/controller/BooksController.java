@@ -3,18 +3,23 @@ package com.libarary.books.controller;
 import com.libarary.books.models.Books;
 import com.libarary.books.service.BookService;
 import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
 import java.util.List;
+import java.util.Map;
+
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("/api")
 public class BooksController {
+
+    @Value("${app.author.name}")
+    private String authorName;
+
     @Autowired
     private BookService service;
 
@@ -30,9 +35,8 @@ public class BooksController {
     }
 
     @GetMapping("/books/{Id}")
-    public ResponseEntity<Books> getBookById(@PathVariable Long Id){
-        Books bookById = service.getBookById(Id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public Books getBookById(@PathVariable Long Id){
+        return service.getBookById(Id);
     }
 
 
@@ -54,5 +58,17 @@ public class BooksController {
             @RequestParam(required = false) String genre)
     {
         return service.searchBy(title,author,genre);
+    }
+    @GetMapping("books/sort")
+    public Page<Books> sortBy(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "title") String sortBy
+    ){
+        return service.sortBy(page,size,sortBy);
+    }
+    @GetMapping("/about/author")
+    public ResponseEntity<?> aboutAuthor(){
+        return ResponseEntity.ok(Map.of("name",authorName));
     }
 }

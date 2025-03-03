@@ -1,9 +1,14 @@
 package com.libarary.books.service;
 
+import com.libarary.books.exception.BookNotFoundException;
 import com.libarary.books.models.Books;
 import com.libarary.books.repository.BooksRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -24,7 +29,9 @@ public class BookService {
     }
 
     public Books getBookById(Long id) {
-        return repository.findById(id).orElse(null);
+        return repository.findById(id).orElseThrow(
+                ()-> new BookNotFoundException("book not found with id : "+ id)
+        );
     }
 
     public void deleteBookById(Long id) {
@@ -45,5 +52,10 @@ public class BookService {
         if (author != null) return repository.findByAuthorContainingIgnoreCase(author);
         if (genre != null) return repository.findByGenreContainingIgnoreCase(genre);
         return Collections.emptyList();
+    }
+
+    public Page<Books> sortBy(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sortBy));
+        return repository.findAll(pageable);
     }
 }
